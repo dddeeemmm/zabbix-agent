@@ -1,0 +1,8 @@
+---
+
+zabbix_agent_install: true
+
+zabbix_agent_host_metadata: ''
+zabbix_agent_log_file_size: 128
+
+nolog: true

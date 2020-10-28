@@ -1,0 +1,12 @@
+---
+
+- include: install.yml
+  when: zabbix_agent_install | bool
+
+- include: config.yml
+
+- name: enable and start zabbix-agent
+  systemd:
+    name: zabbix-agent
+    enabled: yes
+    state: started

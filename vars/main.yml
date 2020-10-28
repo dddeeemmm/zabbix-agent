@@ -1,0 +1,8 @@
+---
+
+zabbix_agent_packages: [ zabbix40-agent, socat, bc, openssl, libxml2 ]
+
+zabbix_agent_server: "{{ cm_cidr_zabbix.split(' ') | ipaddr ('address') | join(',') }}"
+zabbix_agent_server_active: '{{ zabbix_agent_server }}'
+zabbix_agent_include: /etc/zabbix_agentd.conf.d
+zabbix_agent_external_scripts_path: /usr/lib/zabbix/externalscripts

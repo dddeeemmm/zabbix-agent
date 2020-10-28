@@ -1,0 +1,5 @@
+---
+
+- name: install zabbix agent packages
+  package:
+    name: '{{ zabbix_agent_packages }}'

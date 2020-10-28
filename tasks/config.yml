@@ -1,0 +1,46 @@
+---
+
+- name: config zabbix-agent
+  lineinfile:
+    path: /etc/zabbix/zabbix_agentd.conf
+    regexp: '{{ item.regexp }}'
+    line: '{{ item.line }}'
+  with_items:
+    - { regexp: 'LogFileSize=',     line: 'LogFileSize={{ zabbix_agent_log_file_size }}'             }
+    - { regexp: 'Hostname=',        line: 'Hostname={{ ansible_fqdn }}'                              }
+    - { regexp: 'Server=',          line: 'Server={{ zabbix_agent_server }}'                         }
+    - { regexp: 'ServerActive=',    line: 'ServerActive={{ zabbix_agent_server_active }}'            }
+    - { regexp: 'HostMetadata=',    line: 'HostMetadata={{ zabbix_agent_host_metadata }}'            }
+    - { regexp: 'HostMetadata=',    line: 'HostMetadata={{ zabbix_agent_host_metadata }}'            }
+    - { regexp: 'Include=',         line: "Include={{ zabbix_agent_include }}/*.conf"                }
+  no_log: '{{ nolog }}'
+  register: config_zabbix_agent
+
+- name: make external config dir
+  file:
+    path: '{{ zabbix_agent_include }}'
+    state: directory
+
+- name: copy userparameters
+  copy:
+    src: '{{ role_path }}/files/userparameters/'
+    dest: '{{ zabbix_agent_include }}/'
+    register: copy_userparameters
+
+- name: restart zabbix-agent
+  systemd:
+    name: zabbix-agent
+    enabled: yes
+    state: restarted
+  when: config_zabbix_agent is changed or copy_userparameters is changed
+
+- name: make external scripts dir
+  file:
+    path: '{{ zabbix_agent_external_scripts_path }}'
+    state: directory
+
+- name: copy external scripts
+  copy:
+    src: '{{ role_path }}/files/externalscripts/'
+    dest: '{{ zabbix_agent_external_scripts_path }}/'
+    mode: +x
