@@ -25,7 +25,7 @@
   copy:
     src: '{{ role_path }}/files/userparameters/'
     dest: '{{ zabbix_agent_include }}/'
-    register: copy_userparameters
+  register: copy_userparameters
 
 - name: restart zabbix-agent
   systemd:
